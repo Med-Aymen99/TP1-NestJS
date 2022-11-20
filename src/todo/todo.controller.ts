@@ -1,55 +1,66 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Inject, Param, Post, Put } from '@nestjs/common';
+import { MyPipe } from 'src/pipes/my-pipe.pipe';
+import { TodoDBService } from './todoDB.service';
 import { AddTodoDto } from './DTO/add-todo.dto';
 import { UpdateTodoDto } from './DTO/update-todo.dto';
-import { TodoModel } from './entities/todoModel.entities';
+import { TodoEntity } from './entities/Todo.entity';
+import { Todo } from './models/todo.model';
+import { TodoService } from './todo.service';
 
 @Controller('todo')
-export class TodoModuleController {
-    private todos : TodoModel[] = [];
-    
+export class TodoController {
+    @Inject ('UUID') uuid ;
+
+    constructor(private todoService: TodoService, private todoDBService: TodoDBService) {
+    }
+
     @Get()
-    getTodos() {
-        return this.todos;
+    getTodos(
+    ) : Todo[] {
+        return this.todoService.getTodos();
+    }
+  
+    @Get(':id')
+    getTodoById(
+        @Param('id') id
+    ) {
+        return this.todoService.getTodobyId(id);
     }
 
     @Post()
-    addTodo(@Body() addTodoDto:AddTodoDto): TodoModel[] {
-        const todo = new TodoModel(addTodoDto.name, addTodoDto.description);
-        this.todos.push(todo);
-        return this.todos;
+    addTodo(
+        @Body() newTodo : AddTodoDto
+    ) :Todo {
+        return this.todoService.addTodo(newTodo);
     }
 
-    @Get('/:id')
-    getTodoById(@Param("id") id: string) {
-        const todo = this.todos.find((element) => element.id === id);
-        if (todo) {
-            return todo;
-        } else {
-            throw new NotFoundException('not found');
-        }
+    @Post('/db')
+    async addTodoDB(
+        @Body() newTodo : AddTodoDto
+    ) : Promise<TodoEntity> {
+        return await this.todoDBService.addTodoDB(newTodo);
     }
 
-    @Delete('/:id')
-    deleteTodoById(@Param("id") id: string) {
-        const todo = this.todos.find((element) => element.id === id);
-        if (todo) {
-            this.todos.filter((element) => element.id !== id);
-            return this.todos;
-        } else {
-            throw new NotFoundException('not found');
-        }
+    @Post('pipe')
+    testPipe(
+        @Body(MyPipe) myBody,
+    ) {
+        return myBody
     }
 
-    @Put('/:id')
-    updateTodoById(@Param("id") id: string, @Body() updateTodoDto: UpdateTodoDto) {
-        const todo = this.todos.find((element) => element.id === id);
-        if (todo) {
-            todo.name = updateTodoDto.name ?? todo.name;
-            todo.description = updateTodoDto.description ?? todo.description;
-            todo.status = updateTodoDto.status ?? todo.status;
-        } else {
-            throw new NotFoundException('not found');
-        }
+    @Put(':id')
+    modifierTodo(
+        @Param('id') id,
+        @Body() newTodo : UpdateTodoDto
+    ){
+        this.todoService.updateTodo(id, newTodo)
+    }
+
+    @Delete(':id')
+    deleteTodo(
+        @Param('id') id
+    ) {
+        return this.todoService.deleteTodo(id);
     }
 }

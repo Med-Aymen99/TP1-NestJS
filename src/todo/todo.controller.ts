@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { Body, Controller, Delete, Get, Inject, Param, Post, Put } from '@nestjs/common';
-import { MyPipe } from 'src/pipes/my-pipe.pipe';
+import { MyPipe } from '../pipes/my-pipe.pipe';
 import { TodoDBService } from './todoDB.service';
 import { AddTodoDto } from './DTO/add-todo.dto';
 import { UpdateTodoDto } from './DTO/update-todo.dto';

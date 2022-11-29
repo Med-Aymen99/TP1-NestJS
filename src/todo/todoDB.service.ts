@@ -7,7 +7,6 @@ import { AddTodoDto } from './DTO/add-todo.dto';
 import { filterTodoDto } from './DTO/filter-todo.dto';
 import { UpdateTodoDto } from './DTO/update-todo.dto';
 import { TodoEntity } from './entities/Todo.entity';
-import { Todo } from './models/todo.model';
 import {
     paginate,
     Pagination,

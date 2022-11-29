@@ -9,8 +9,6 @@ import { TodoEntity } from './entities/Todo.entity';
 import { filterTodoDto } from './DTO/filter-todo.dto';
 import { Pagination } from 'nestjs-typeorm-paginate';
 
-
-
 @Controller('todoDB')
 export class tododbcontroller {
 

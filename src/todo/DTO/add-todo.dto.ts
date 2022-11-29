@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 
 import { TodoStatusEnum } from "../models/todoStatus.enum";
-import { IsNotEmpty, MinLength, MaxLength} from 'class-validator';
+import { IsNotEmpty, MinLength, MaxLength, isEnum, IsEnum} from 'class-validator';
 
 export class  AddTodoDto {
     @IsNotEmpty()
@@ -18,6 +18,6 @@ export class  AddTodoDto {
         message: 'La taille minimale du champ description est de 10 caractères'
     })
     description: string;
-    
+    @IsEnum(TodoStatusEnum)
     status: TodoStatusEnum;
 }
